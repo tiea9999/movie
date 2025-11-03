@@ -5,21 +5,9 @@
 <title>IPTV Fullscreen Player</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    overflow: hidden;
-}
-#player {
-    width: 100%;
-    height: 100%;
-}
+html, body { margin:0; padding:0; width:100%; height:100%; background:#000; overflow:hidden; }
+#player { width:100%; height:100%; }
 </style>
-
-<!-- JW Player Library -->
 <script src="https://content.jwplatform.com/libraries/KB5zFt7A.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 <script> jwplayer.key='XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';</script>
@@ -28,55 +16,41 @@ html, body {
 <div id="player"></div>
 
 <script>
-var playerInstance = jwplayer("player");
+(function(){
+    // 🔒 URL สตรีมจริงแบบ Base64
+    const encoded = "aHR0cHM6Ly9jY28tc3RyZWFtZXIxLmNkbi4zYmJ0di5jb206ODQ0My8zYmIvbGl2ZS8xMDcvMTA3Lm1wZA==";
+    const url = atob(encoded);
 
-playerInstance.setup({
-    playlist: [{
-        title: "HBO",
-        description: "HBO Live Channel",
-        sources: [
-            {
-                file: 'https://cco-streamer1.cdn.3bbtv.com:8443/3bb/live/107/107.mpd', // DASH URL
-                type: "dash",
-                drm: {
-                    clearkey: {
-                        keyId: "f48caba466394e93b50780f21798787a",
-                        key: "9a074a10db4342e7937076b3e52f6029"
-                    }
-                },
-                label: "HD",
-                default: true
-            },
-            {
-                file: "https://cco-streamer1.cdn.3bbtv.com:8443/3bb/live/107/107.mpd", // HLS fallback
-                type: "hls",
-                label: "HLS"
-            }
-        ]
-    }],
-    width: "100%",
-    height: "100%",
-    aspectratio: "16:9",
-    autostart: true,
-    stretching: "fill", // เต็มจอเต็มพื้นที่
-    cast: {},           // รองรับ Chromecast
-    primary: "html5",   // ใช้ HTML5 player
-    repeat: true,       // เล่นซ้ำอัตโนมัติ
-    controls: true,
-    preload: "auto"
-});
+    var playerInstance = jwplayer("player");
 
-// --- ฟังก์ชันตรวจสอบการเล่นและ reload อัตโนมัติ ---
-playerInstance.on('error', function(e){
-    console.error("JW Player error:", e);
-    // ลองรีโหลด player ถ้ามี error
-    setTimeout(() => playerInstance.load(playerInstance.getPlaylist()), 3000);
-});
+    playerInstance.setup({
+        playlist: [{
+            title: "HBO",
+            description: "HBO Live Channel",
+            sources: [
+                { file: url, type: "dash", label: "HD", default: true },
+                { file: url, type: "hls", label: "HLS" }
+            ]
+        }],
+        width: "100%",
+        height: "100%",
+        aspectratio: "16:9",
+        autostart: true,
+        stretching: "fill",
+        cast: {},
+        primary: "html5",
+        repeat: true,
+        controls: true,
+        preload: "auto"
+    });
 
-playerInstance.on('complete', function(){
-    // เล่นซ้ำอัตโนมัติ
-    playerInstance.play();
-});
+    playerInstance.on('error', function(e){
+        console.error("JW Player error:", e);
+        setTimeout(() => playerInstance.load(playerInstance.getPlaylist()), 3000);
+    });
+
+    playerInstance.on('complete', function(){ playerInstance.play(); });
+})();
 </script>
 </body>
 </html>
