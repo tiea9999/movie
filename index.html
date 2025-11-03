@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>IPTV Fullscreen Player</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
 <style>
 html, body { margin:0; padding:0; width:100%; height:100%; background:#000; overflow:hidden; }
 #player { width:100%; height:100%; }
@@ -17,7 +17,7 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#000; over
 
 <script>
 (function(){
-    // 🔒 URL สตรีมจริงแบบ Base64
+    // 🔒 Base64 URL ของสตรีมจริง
     const encoded = "aHR0cHM6Ly9jY28tc3RyZWFtZXIxLmNkbi4zYmJ0di5jb206ODQ0My8zYmIvbGl2ZS8xMDcvMTA3Lm1wZA==";
     const url = atob(encoded);
 
@@ -28,7 +28,18 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#000; over
             title: "HBO",
             description: "HBO Live Channel",
             sources: [
-                { file: url, type: "dash", label: "HD", default: true },
+                { 
+                    file: url, 
+                    type: "dash",
+                    drm: {
+                        clearkey: {
+                            keyId: "f48caba466394e93b50780f21798787a",
+                            key: "9a074a10db4342e7937076b3e52f6029"
+                        }
+                    },
+                    label: "HD",
+                    default: true
+                },
                 { file: url, type: "hls", label: "HLS" }
             ]
         }],
@@ -37,7 +48,6 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#000; over
         aspectratio: "16:9",
         autostart: true,
         stretching: "fill",
-        cast: {},
         primary: "html5",
         repeat: true,
         controls: true,
